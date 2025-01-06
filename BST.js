@@ -70,7 +70,25 @@ function Tree(arr) {
     }
   }
 
-  return { root, insert, deleteItem };
+  function find(val) {
+    let curr = root;
+
+    if (curr === null) return;
+
+    while (curr) {
+      if (curr.data > val) {
+        curr = curr.left;
+      } else if (curr.data < val) {
+        curr = curr.right;
+      } else {
+        return curr;
+      }
+    }
+
+    return null;
+  }
+
+  return { root, insert, deleteItem, find };
 }
 
 function preOrder(root) {
@@ -97,6 +115,5 @@ const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 
 const root = Tree(arr);
 root.insert(2);
-root.insert(13);
-root.deleteItem(67);
 prettyPrint(root.root);
+console.log(root.find(13));
