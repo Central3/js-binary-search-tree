@@ -88,14 +88,105 @@ function Tree(arr) {
     return null;
   }
 
-  return { root, insert, deleteItem, find };
-}
+  function levelOrderIter(callbk) {
+    if (!callbk || typeof callbk !== "function")
+      throw new Error("callback is required");
 
-function preOrder(root) {
-  if (root === null) return;
-  console.log(root.data);
-  preOrder(root.left);
-  preOrder(root.right);
+    if (!root) return;
+
+    let curr = root;
+    const queue = [];
+    queue.push(curr);
+
+    while (queue.length !== 0) {
+      const currNode = queue.shift();
+      callbk(currNode);
+      if (currNode.left) queue.push(currNode.left);
+      if (currNode.right) queue.push(currNode.right);
+    }
+  }
+
+  function levelOrderRecur(callbk) {
+    if (!callbk || typeof callbk !== "function")
+      throw new Error("Callback is required");
+
+    if (!root) return;
+
+    function traverseLevel(nodes) {
+      if (nodes.length === 0) return;
+
+      const nextLevel = [];
+      nodes.forEach((node) => {
+        callbk(node);
+        if (node.left) nextLevel.push(node.left);
+        if (node.right) nextLevel.push(node.right);
+      });
+
+      traverseLevel(nextLevel);
+    }
+
+    traverseLevel([root]);
+  }
+
+  function inOrder(callbk) {
+    if (!callbk || typeof callbk !== "function")
+      throw new Error("callback is required");
+
+    if (!root) return;
+
+    function traverse(node) {
+      if (!node) return;
+      traverse(node.left);
+      callbk(node);
+      traverse(node.right);
+    }
+
+    traverse(root);
+  }
+
+  function preOrder(callbk) {
+    if (!callbk || typeof callbk !== "function")
+      throw new Error("callback is required");
+
+    if (!root) return;
+
+    function traverse(node) {
+      if (!node) return;
+      callbk(node);
+      traverse(node.left);
+      traverse(node.right);
+    }
+
+    traverse(root);
+  }
+
+  function postOrder(callbk) {
+    if (!callbk || typeof callbk !== "function")
+      throw new Error("callback is required");
+
+    if (!root) return;
+
+    function traverse(node) {
+      if (!node) return;
+      traverse(node.left);
+      traverse(node.right);
+      callbk(node);
+    }
+
+    traverse(root);
+  }
+
+  return {
+    root,
+    insert,
+    deleteItem,
+    find,
+    levelOrderIter,
+    levelOrderRecur,
+    inOrder,
+    preOrder,
+    postOrder,
+  };
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -116,4 +207,4 @@ const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const root = Tree(arr);
 root.insert(2);
 prettyPrint(root.root);
-console.log(root.find(13));
+root.postOrder((node) => console.log(node.data));
