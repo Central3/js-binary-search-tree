@@ -176,6 +176,34 @@ function Tree(arr) {
     traverse(root);
   }
 
+  function height(root) {
+    if (!root) return 0;
+
+    let height = 0;
+    const queue = [root];
+
+    while (queue.length !== 0) {
+      let levelSize = queue.length;
+
+      for (let i = 0; i < levelSize; i++) {
+        const front = queue.shift();
+        if (front.left) queue.push(front.left);
+        if (front.right) queue.push(front.right);
+      }
+
+      height++;
+    }
+
+    return height - 1;
+  }
+
+  function isBalanced() {
+    const lHeight = height(root.left);
+    const rHeight = height(root.right);
+
+    return Math.abs(lHeight - rHeight) < 2;
+  }
+
   return {
     root,
     insert,
@@ -186,6 +214,8 @@ function Tree(arr) {
     inOrder,
     preOrder,
     postOrder,
+    height,
+    isBalanced,
   };
 }
 
@@ -207,4 +237,4 @@ const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const root = Tree(arr);
 root.insert(2);
 prettyPrint(root.root);
-root.postOrder((node) => console.log(node.data));
+console.log(root.isBalanced());
